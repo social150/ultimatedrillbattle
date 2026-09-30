@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Every Drill Brand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --shop:#F5C400;
+  --ink:#000000;
+  --paper:#FFF6D2;
+  --paper:color-mix(in srgb, var(--shop) 24%, #ffffff);
+  --faint:rgba(0,0,0,.42);
+  --faint:color-mix(in srgb, var(--ink) 42%, transparent);
+  --ghostline:rgba(0,0,0,.35);
+  --ghostline:color-mix(in srgb, var(--ink) 35%, transparent);
+  --glow:rgba(255,255,255,.62);
+  --halo:#FFE36A;
+  --halo:color-mix(in srgb, var(--shop) 55%, #ffffff);
+  --display:'Anton','Impact','Haettenschweiler','Arial Narrow',sans-serif;
+  --cond:'Barlow Condensed','Arial Narrow','Roboto Condensed',Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  background:var(--shop);
+}
+:root.dark{
+  --paper:color-mix(in srgb, var(--shop) 72%, #000000);
+  --glow:rgba(255,255,255,.28);
+  --halo:color-mix(in srgb, var(--shop) 70%, #ffffff);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --glow:rgba(255,255,255,.55); }
+}
+:root[data-theme="dark"]{ --glow:rgba(255,255,255,.55); }
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;margin:0}
+*,*::before,*::after{box-sizing:border-box}
+body{
+  background:var(--shop);color:var(--ink);font-family:var(--cond);
+  overflow:hidden;position:relative;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
+}
+input,textarea{-webkit-user-select:text;user-select:text}
+#vp{position:absolute;inset:0;overflow:hidden}
+#stage{
+  position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;
+  background:
+    radial-gradient(760px 520px at 50% 47%, var(--halo), transparent 72%),
+    radial-gradient(1300px 900px at 50% 50%, color-mix(in srgb, var(--halo) 45%, transparent), transparent 75%),
+    var(--shop);
+}
+
+/* Header */
+#title{
+  position:absolute;left:34px;top:18px;max-width:860px;
+  font-family:var(--display);font-size:108px;line-height:1.02;
+  text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;overflow:visible;
+  text-shadow:0 0 34px var(--glow),0 0 70px var(--glow);
+  padding:0 6px;
+}
+#sub{position:absolute;left:40px;top:134px;font-size:25px;font-weight:700}
+#tools{position:absolute;right:42px;top:36px;display:flex;gap:16px;align-items:center}
+.btn,.seg{
+  border:4px solid var(--ink);border-radius:10px;
+  box-shadow:5px 5px 0 var(--ink),0 0 26px var(--glow);
+}
+.btn{
+  height:62px;padding:0 24px;background:var(--paper);color:var(--ink);
+  font:800 26px/1 var(--cond);cursor:pointer;touch-action:manipulation;white-space:nowrap;
+  transition:transform .08s,box-shadow .08s;
+}
+.btn.solid{background:var(--ink);color:var(--shop)}
+.btn:active{transform:translate(4px,4px);box-shadow:1px 1px 0 var(--ink),0 0 18px var(--glow)}
+.btn:disabled{opacity:.35;cursor:default;transform:none;box-shadow:3px 3px 0 var(--ink)}
+.btn:focus-visible,.slot:focus-visible{outline:4px solid var(--ink);outline-offset:4px}
+.btn.sm{height:52px;font-size:23px;padding:0 14px;width:100%}
+.seg{display:flex;height:62px;overflow:hidden;background:var(--paper);margin-right:6px}
+.seg button{border:0;background:transparent;color:var(--ink);font:800 26px/1 var(--cond);padding:0 22px;cursor:pointer;touch-action:manipulation;white-space:nowrap}
+.seg button+button{border-left:4px solid var(--ink)}
+.seg button.on{background:var(--ink);color:var(--shop)}
+.seg button:focus-visible{outline:4px solid var(--shop);outline-offset:-9px}
+
+/* Bracket */
+.rlabel{position:absolute;top:172px;width:170px;font-size:25px;font-weight:800}
+.rlabel.r{text-align:right}
+.rlabel.c{text-align:center}
+.slot{
+  position:absolute;width:168px;height:42px;
+  border:3px solid var(--ink);border-radius:7px;background:var(--paper);color:var(--ink);
+  box-shadow:4px 4px 0 var(--ink),0 0 18px var(--glow);
+  display:flex;align-items:center;padding:0 12px;
+  font-weight:800;font-size:23px;line-height:1;cursor:pointer;touch-action:none;
+}
+.slot.r{justify-content:flex-end;text-align:right}
+.slot .nm{white-space:nowrap;overflow:hidden;min-width:0;flex:0 1 auto;padding-bottom:1px}
+.slot.empty{background:transparent;border-style:dashed;border-color:var(--ghostline);color:var(--ghostline);box-shadow:none;cursor:default}
+.slot.win{background:var(--ink);color:var(--shop);box-shadow:4px 4px 0 var(--faint),0 0 22px 3px var(--glow)}
+.slot.lose{background:transparent;border-color:var(--ghostline);color:var(--faint);box-shadow:none}
+.slot.lose .nm{text-decoration:line-through;text-decoration-thickness:3px}
+.slot.dup:not(.lose) .nm{text-decoration:underline dashed 2px;text-underline-offset:4px}
+.slot.final{width:328px;height:62px;font-size:31px;justify-content:center;text-align:center;border-width:4px;box-shadow:6px 6px 0 var(--ink),0 0 30px var(--glow)}
+.slot.final.win{box-shadow:6px 6px 0 var(--faint),0 0 34px 6px var(--glow)}
+.slot.final.empty,.slot.final.lose{box-shadow:none}
+.slot.target{outline:4px solid var(--ink);outline-offset:4px}
+.slot.swapt{outline:2px dashed var(--ink);outline-offset:4px}
+.slot.hot{background:repeating-linear-gradient(-45deg,var(--ink) 0 8px,var(--shop) 8px 16px);color:transparent}
+.slot.dragging{opacity:.3}
+.slot.pop{animation:pop .3s ease-out}
+@keyframes pop{0%{transform:scale(.88)}60%{transform:scale(1.07)}100%{transform:scale(1)}}
+
+.m-rename .slot[data-l="0"]:not(.champ)::after,.m-rename .slot:not(.empty):not(.champ)::after{content:"\270E";font-size:17px;margin-left:6px;opacity:.6;flex:none}
+.m-rename .slot.empty[data-l="0"]{cursor:pointer;border-color:var(--ink);color:var(--ink)}
+.m-move .slot[data-l="0"]{cursor:grab;box-shadow:inset 9px 0 0 var(--ink),4px 4px 0 var(--ink),0 0 18px var(--glow);padding-left:18px}
+.m-move .slot.r[data-l="0"]{box-shadow:inset -9px 0 0 var(--ink),4px 4px 0 var(--ink),0 0 18px var(--glow);padding-left:12px;padding-right:18px}
+.m-move .slot.empty[data-l="0"]{cursor:pointer;box-shadow:none}
+.m-move .slot:not([data-l="0"]),.m-move .rlabel:not(.first),.m-move #bracket svg{opacity:.3}
+.slot.sel{background:var(--ink);color:var(--shop);outline:4px dashed var(--ink);outline-offset:5px;animation:selp 1s ease-in-out infinite}
+@keyframes selp{50%{outline-offset:9px}}
+
+/* Champion plate */
+.slot.champ{
+  display:block;padding:14px;border-radius:14px;border:4px solid var(--ink);
+  background:repeating-linear-gradient(-45deg,var(--ink) 0 18px,var(--shop) 18px 36px);
+  box-shadow:10px 10px 0 var(--ink),0 0 70px 16px var(--glow);
+}
+.plate{
+  height:100%;background:var(--ink);color:var(--shop);border-radius:6px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:10px 16px;overflow:hidden;
+}
+.plate .lbl{font:800 26px/1 var(--cond);letter-spacing:1px;margin-bottom:10px}
+.plate .nm{font-family:var(--display);font-size:66px;line-height:1.05;max-width:100%;text-transform:uppercase;text-shadow:0 0 26px color-mix(in srgb, var(--shop) 70%, transparent)}
+.champ.vacant .plate .nm{opacity:.45;font-size:42px;text-shadow:none}
+.champ:not(.vacant){box-shadow:10px 10px 0 var(--ink),0 0 110px 34px var(--glow)}
+.champ.crowned .plate{animation:stamp .55s cubic-bezier(.2,1.5,.4,1)}
+@keyframes stamp{0%{transform:scale(1.35) rotate(-4deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.champ.hot .plate{background:transparent}
+#vs{position:absolute;left:796px;top:583px;width:328px;text-align:center;font-family:var(--display);font-size:36px;line-height:40px;text-shadow:0 0 20px var(--glow)}
+
+/* Progress */
+#prog{position:absolute;left:796px;top:730px;width:328px}
+#progLabel{font-size:31px;font-weight:800;margin-bottom:10px}
+.ticks{display:grid;grid-template-columns:repeat(31,1fr);gap:3px;height:28px}
+.tick{border:2px solid var(--ink);border-radius:2px}
+.tick.on{background:var(--ink)}
+#hint{margin-top:18px;font-size:21px;font-weight:600;line-height:1.3}
+#saved{position:absolute;left:796px;top:1018px;width:328px;text-align:center;font-size:19px;font-weight:600;color:var(--faint)}
+
+/* Ghost */
+.ghost{
+  position:absolute;z-index:50;pointer-events:none;height:54px;min-width:180px;padding:0 18px;
+  display:flex;align-items:center;justify-content:center;white-space:nowrap;
+  background:var(--ink);color:var(--shop);border-radius:9px;font:800 27px/1 var(--cond);
+  box-shadow:8px 8px 0 rgba(0,0,0,.28),0 0 30px var(--glow);transform:translate(-50%,-50%) rotate(-3deg);
+}
+
+/* Setup panel */
+#panel{
+  position:absolute;left:600px;top:166px;width:720px;height:886px;z-index:5;
+  display:none;flex-direction:column;gap:14px;padding:22px 24px;
+  background:var(--shop);border:5px solid var(--ink);border-radius:16px;
+  box-shadow:12px 12px 0 var(--ink),0 0 90px 20px var(--glow);
+}
+.panel-open #panel{display:flex}
+.phead{display:flex;align-items:center;justify-content:space-between}
+.phead h2{margin:0;font-family:var(--display);font-size:44px;font-weight:400;text-transform:uppercase;line-height:1;white-space:nowrap}
+.phead .btn{width:auto}
+.pcols{flex:1;min-height:0;display:grid;grid-template-columns:1fr 290px;gap:24px}
+.pcol{display:flex;flex-direction:column;gap:11px;min-height:0}
+.fl{font-size:22px;font-weight:800;display:flex;justify-content:space-between;align-items:baseline}
+.note{font-size:18px;font-weight:600;line-height:1.25;margin:-4px 0 0}
+.field{
+  border:4px solid var(--ink);border-radius:9px;background:var(--paper);color:var(--ink);
+  box-shadow:4px 4px 0 var(--ink);
+}
+#titleIn{height:54px;font:800 25px var(--cond);padding:0 12px;width:100%}
+#list{
+  flex:1;min-height:0;width:100%;resize:none;
+  font:700 22px/1.32 var(--cond);padding:8px 12px;white-space:pre;overflow:auto;touch-action:pan-y;
+}
+.field:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
+#dups{font-size:18px;font-weight:700;min-height:22px}
+.colorrow{display:flex;gap:12px;align-items:stretch}
+#colorWrap{position:relative;width:76px;height:62px;flex:none;border:4px solid var(--ink);border-radius:9px;box-shadow:4px 4px 0 var(--ink);overflow:hidden;background:var(--shop);cursor:pointer}
+#colorIn{position:absolute;inset:-10px;width:calc(100% + 20px);height:calc(100% + 20px);opacity:0;cursor:pointer;border:0;padding:0}
+#colorWrap::after{content:"Pick";position:absolute;left:0;right:0;bottom:3px;text-align:center;font:800 16px/1 var(--cond);color:var(--ink);pointer-events:none}
+#hexIn{flex:1;min-width:0;height:62px;font:800 28px var(--cond);padding:0 12px;text-transform:uppercase;letter-spacing:1px}
+#hexIn.bad{border-style:dashed}
+.swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.sw{height:44px;border:3px solid var(--ink);border-radius:7px;cursor:pointer;padding:0;box-shadow:3px 3px 0 var(--ink);touch-action:manipulation}
+.sw.on{outline:4px solid var(--ink);outline-offset:3px}
+.actions{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+
+/* Rename */
+#modal{position:absolute;inset:0;z-index:60;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center}
+#modal.open{display:flex}
+.card{
+  width:820px;background:var(--shop);border:5px solid var(--ink);border-radius:18px;padding:32px;
+  box-shadow:14px 14px 0 var(--ink),0 0 120px 30px var(--glow);
+}
+.card h2{margin:0 0 6px;font-family:var(--display);font-weight:400;font-size:52px;text-transform:uppercase;line-height:1}
+.card p{margin:0 0 18px;font-size:22px;font-weight:700}
+#renameIn{width:100%;height:84px;font:800 44px var(--cond);padding:0 18px}
+.card .row{display:flex;gap:18px;justify-content:flex-end;margin-top:26px}
+.card .btn{height:68px;font-size:30px;padding:0 32px}
+
+#toast{
+  position:absolute;left:50%;bottom:30px;transform:translate(-50%,20px);z-index:70;
+  background:var(--ink);color:var(--shop);font:800 27px/1 var(--cond);padding:16px 26px;border-radius:10px;
+  box-shadow:0 0 30px var(--glow);
+  opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="vp">
+<div id="stage">
+  <div id="title"></div>
+  <div id="sub"></div>
+  <div id="tools">
+    <div class="seg" role="group" aria-label="Mode">
+      <button data-mode="pick" class="on">Pick</button>
+      <button data-mode="move">Move</button>
+      <button data-mode="rename">Rename</button>
+    </div>
+    <button class="btn" id="bUndo">Undo</button>
+    <button class="btn" id="bClear">Clear picks</button>
+    <button class="btn" id="bSetup">Setup</button>
+    <button class="btn" id="bFull">Fullscreen</button>
+  </div>
+
+  <div id="bracket"></div>
+  <div id="vs">vs</div>
+
+  <div id="prog">
+    <div id="progLabel"></div>
+    <div class="ticks" id="ticks"></div>
+    <div id="hint"></div>
+  </div>
+  <div id="saved">Saved on this screen</div>
+
+  <div id="panel">
+    <div class="phead"><h2>Setup</h2><button class="btn solid sm" id="bDone">Done</button></div>
+    <div class="pcols">
+      <div class="pcol">
+        <div class="fl"><span>Title</span></div>
+        <input id="titleIn" class="field" maxlength="60" aria-label="Bracket title">
+        <div class="fl"><span>Drills, in bracket order</span><span id="count"></span></div>
+        <p class="note">Lines 1–16 fill the left side, 17–32 the right. Every two lines is a matchup.</p>
+        <textarea id="list" class="field" spellcheck="false" aria-label="Drill list"></textarea>
+        <div id="dups"></div>
+      </div>
+      <div class="pcol">
+        <div class="fl"><span>Background color</span></div>
+        <div class="colorrow">
+          <label id="colorWrap" aria-label="Pick a custom color"><input type="color" id="colorIn"></label>
+          <input id="hexIn" class="field" maxlength="7" spellcheck="false" aria-label="Hex color code" placeholder="#F5C400">
+        </div>
+        <div class="swatches" id="swatches"></div>
+        <div class="actions">
+          <button class="btn sm" id="bShuffle">Shuffle all</button>
+          <button class="btn sm" id="bClear2">Clear picks</button>
+          <button class="btn sm" id="bLoad">Load drill list</button>
+          <button class="btn sm" id="bWipe">Clear names</button>
+          <button class="btn sm" id="bCopy">Copy results</button>
+          <button class="btn sm" id="bReset">Reset everything</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal" aria-hidden="true">
+    <div class="card" role="dialog" aria-modal="true" aria-labelledby="rnTitle">
+      <h2 id="rnTitle">Rename drill</h2>
+      <p id="rnWhere"></p>
+      <input id="renameIn" class="field" maxlength="40" autocomplete="off" spellcheck="false" aria-label="Drill name">
+      <div class="row">
+        <button class="btn" id="bCancel">Cancel</button>
+        <button class="btn solid" id="bSave">Save name</button>
+      </div>
+    </div>
+  </div>
+  <div id="toast"></div>
+</div>
+</div>
+
+<script>
+(function(){
+const DEFAULT = [
+  "Milwaukee","HyperTough","Craftsman","Cat","Makita","Black and Decker","HOTO","Fanttik",
+  "Flex","Metabo","Skil","Hitachi","Kobalt","Porter Cable","Kreg","Bosch",
+  "DeWalt","Greenworks","Parkside","Litheli","Ryobi","Bauer","Masterforce","Vevor",
+  "Warrior","Ridgid","Genesis","Hercules","The OG Pink Box","WORX","WEN","HILTI"
+];
+const DEFAULT_TITLE = "Every Drill Brand";
+const DEFAULT_COLOR = "#F5C400";
+const SWATCHES = [
+  ["#F5C400","Shop yellow"],["#FFD60A","Safety yellow"],["#FFB000","Amber"],["#D7F205","Hi-vis"],["#FF7A00","Signal orange"],
+  ["#E3262E","Red"],["#00A0A8","Teal"],["#0B4F9C","Blue"],["#B9B7AE","Concrete"],["#161616","Black"]
+];
+const KEY = "drill-bracket-v1";
+const ROUNDS = ["Round of 32","Round of 16","Quarterfinals","Semifinals","Final"];
+
+const TOP=210, PITCH=104, SH=42, GAP=6, SW=168;
+const XL=[36,226,416,606], XR=[1716,1526,1336,1146];
+const CX=796, CW=328;
+const FIN=[{y:516},{y:630}], FH=62;
+const CHAMP={y:216,h:262};
+
+const $=id=>document.getElementById(id);
+const stage=$('stage'), vp=$('vp'), bracket=$('bracket');
+
+function blank(){
+  return {title:DEFAULT_TITLE,color:DEFAULT_COLOR,entries:DEFAULT.slice(),
+    slots:[null].concat([16,8,4,2,1].map(n=>Array(n).fill(null)))};
+}
+function valid(o){
+  return o && typeof o.title==='string' && Array.isArray(o.entries) && o.entries.length===32 &&
+    Array.isArray(o.slots) && o.slots.length===6 &&
+    [16,8,4,2,1].every((n,i)=>Array.isArray(o.slots[i+1]) && o.slots[i+1].length===n);
+}
+function load(){
+  try{ const raw=localStorage.getItem(KEY); if(raw){ const o=JSON.parse(raw); if(valid(o)){ o.slots[0]=null; return o; } } }catch(e){}
+  return blank();
+}
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+
+let S=load();
+let hist=[];
+let pops=new Set();
+let mode='pick', panelOpen=false, sel=null;
+
+function snap(){ hist.push(JSON.stringify(S)); if(hist.length>100) hist.shift(); }
+function commit(){ save(); render(); }
+
+// ---------- Bracket logic ----------
+function occ(L,p){
+  if(L===0){ const n=S.entries[p]; return (n && n.trim()) ? p : null; }
+  return S.slots[L][p];
+}
+function topLevel(e){ let L=0; while(L<5 && S.slots[L+1][e>>(L+1)]===e) L++; return L; }
+function clearAbove(e,L){ for(let k=L+1;k<=5;k++){ const p=e>>k; if(S.slots[k][p]===e) S.slots[k][p]=null; } }
+function fillTo(e,toL){
+  const t=topLevel(e);
+  for(let k=t+1;k<=toL;k++){
+    const p=e>>k, old=S.slots[k][p];
+    if(old!==null && old!==e) clearAbove(old,k-1);
+    S.slots[k][p]=e;
+  }
+}
+function clearPicks(){ for(let L=1;L<=5;L++) S.slots[L].fill(null); }
+function picked(){ let n=0; for(let L=1;L<=5;L++) S.slots[L].forEach(v=>{ if(v!==null) n++; }); return n; }
+
+function swap(a,b){
+  if(a===b) return;
+  const had=S.slots[1][a>>1]!==null||S.slots[1][b>>1]!==null;
+  const A=S.entries[a]||'Empty spot', B=S.entries[b]||'empty spot';
+  snap();
+  [S.entries[a],S.entries[b]]=[S.entries[b],S.entries[a]];
+  [a,b].forEach(x=>{ const w=S.slots[1][x>>1]; if(w!==null) clearAbove(w,0); });
+  pops.add('0-'+a); pops.add('0-'+b);
+  commit(); syncPanel();
+  toast(`${A} and ${B} swapped`+(had?'. Picks in those matchups reset.':''));
+}
+function tap(L,p){
+  if(mode==='rename'){ const e= L===0 ? p : occ(L,p); if(e!==null) openRename(e); return; }
+  if(mode==='move'){
+    if(L!==0) return;
+    if(sel===null){ if(occ(0,p)===null) return; sel=p; render(); return; }
+    if(sel===p){ sel=null; render(); return; }
+    const a=sel; sel=null; swap(a,p); return;
+  }
+  const e=occ(L,p); if(e===null) return;
+  if(L===5){ toast(S.entries[e]+" takes it all"); return; }
+  const np=p>>1;
+  snap();
+  if(S.slots[L+1][np]===e){ clearAbove(e,L); pops.add(L+'-'+p); }
+  else { fillTo(e,L+1); pops.add((L+1)+'-'+np); if(L+1===5) toast(S.entries[e]+" is your champion"); }
+  commit();
+}
+function drop(e,fromL,fromP,toL,toP){
+  if(mode==='move'){
+    if(fromL!==0 || toL!==0 || toP===fromP) return false;
+    sel=null; swap(fromP,toP); return true;
+  }
+  if(toP!==(e>>toL)) return false;
+  const t=topLevel(e);
+  if(toL>t){ snap(); fillTo(e,toL); pops.add(toL+'-'+toP); commit(); if(toL===5) toast(S.entries[e]+" is your champion"); return true; }
+  if(toL<t){ snap(); clearAbove(e,toL); pops.add(toL+'-'+toP); commit(); return true; }
+  return false;
+}
+
+// ---------- Rendering ----------
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function norm(s){ return (s||'').trim().toLowerCase(); }
+function dupSet(){
+  const c={}; S.entries.forEach(n=>{ const k=norm(n); if(k) c[k]=(c[k]||0)+1; });
+  return new Set(Object.keys(c).filter(k=>c[k]>1));
+}
+function cy(L,local){
+  if(L===0) return TOP+(local>>1)*PITCH+(local&1)*(SH+GAP)+SH/2;
+  return (cy(L-1,2*local)+cy(L-1,2*local+1))/2;
+}
+function slotHTML(L,p,x,y,w,h,extra,dups){
+  const e=occ(L,p);
+  let cls='slot'+extra, name='\u2014';
+  if(e===null) cls+=' empty';
+  else{
+    name=esc(S.entries[e]||'\u2014');
+    const nx=S.slots[L+1][p>>1];
+    if(nx===e) cls+=' win'; else if(nx!==null) cls+=' lose';
+    if(dups.has(norm(S.entries[e]))) cls+=' dup';
+  }
+  if(pops.has(L+'-'+p)) cls+=' pop';
+  if(mode==='move' && L===0 && sel===p) cls+=' sel';
+  const focusable = e!==null || (L===0 && mode!=='pick');
+  return `<div class="${cls}" data-l="${L}" data-p="${p}" role="button" tabindex="${focusable?0:-1}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px"><span class="nm">${name}</span></div>`;
+}
+function render(){
+  const dups=dupSet();
+  let thin='', thick='', html='';
+  for(let L=0;L<4;L++){
+    const f=L===0?' first':'';
+    html+=`<div class="rlabel${f}" style="left:${XL[L]}px">${ROUNDS[L]}</div>`;
+    html+=`<div class="rlabel r${f}" style="left:${XR[L]-2}px">${ROUNDS[L]}</div>`;
+  }
+  html+=`<div class="rlabel c" style="left:${CX}px;width:${CW}px">${ROUNDS[4]}</div>`;
+
+  for(let L=0;L<4;L++){
+    const n=32>>L, half=n/2;
+    for(let p=0;p<n;p++){
+      const right=p>=half, local=right?p-half:p;
+      const x=right?XR[L]:XL[L];
+      const yc=cy(L,local);
+      html+=slotHTML(L,p,x,yc-SH/2,SW,SH,right?' r':'',dups);
+      const dp=p>>1;
+      const yd = L<3 ? cy(L+1,local>>1) : FIN[right?1:0].y+FH/2;
+      let x1,x2;
+      if(!right){ x1=XL[L]+SW; x2= L<3 ? XL[L+1] : CX; }
+      else { x1=XR[L]; x2= L<3 ? XR[L+1]+SW : CX+CW; }
+      const xm=(x1+x2)/2;
+      const d=`M${x1} ${yc}H${xm}V${yd}H${x2}`;
+      const e=occ(L,p);
+      if(e!==null && S.slots[L+1][dp]===e) thick+=`<path d="${d}"/>`; else thin+=`<path d="${d}"/>`;
+    }
+  }
+  html+=slotHTML(4,0,CX,FIN[0].y,CW,FH,' final',dups);
+  html+=slotHTML(4,1,CX,FIN[1].y,CW,FH,' final',dups);
+  const ce=S.slots[5][0];
+  const cname= ce===null ? 'To be decided' : esc(S.entries[ce]||'\u2014');
+  html+=`<div class="slot champ${ce===null?' vacant':''}${pops.has('5-0')&&ce!==null?' crowned':''}" data-l="5" data-p="0" role="button" tabindex="${ce===null?-1:0}" style="left:${CX}px;top:${CHAMP.y}px;width:${CW}px;height:${CHAMP.h}px"><div class="plate"><div class="lbl">Champion</div><div class="nm">${cname}</div></div></div>`;
+  const stem=`M${CX+CW/2} ${CHAMP.y+CHAMP.h+4}V${FIN[0].y}`;
+  if(ce!==null && ce===S.slots[4][0]) thick+=`<path d="${stem}"/>`; else thin+=`<path d="${stem}"/>`;
+
+  const svg=`<svg width="1920" height="1080" style="position:absolute;left:0;top:0;pointer-events:none;color:var(--ink)" fill="none" stroke="currentColor"><g stroke-width="3" opacity=".55">${thin}</g><g stroke-width="7">${thick}</g></svg>`;
+  bracket.innerHTML=svg+html;
+  pops.clear();
+
+  $('title').textContent=S.title||' ';
+  $('title').style.maxWidth=Math.max(400,$('tools').offsetLeft-70)+'px';
+  fitText($('title'),108,40);
+  $('progLabel').textContent=`${picked()} of 31 picked`;
+  let ticks='';
+  for(let L=1;L<=5;L++) S.slots[L].forEach(v=>{ ticks+=`<div class="tick${v!==null?' on':''}"></div>`; });
+  $('ticks').innerHTML=ticks;
+  $('bUndo').disabled=!hist.length;
+  applyColor();
+
+  bracket.querySelectorAll('.nm').forEach(el=>{
+    const champ=el.closest('.champ');
+    fitText(el, parseFloat(getComputedStyle(el).fontSize), champ?28:14);
+  });
+}
+function fitText(el,start,min){
+  let fs=start; el.style.fontSize=fs+'px';
+  while(el.scrollWidth>el.clientWidth+1 && fs>min){ fs-=1; el.style.fontSize=fs+'px'; }
+}
+
+// ---------- Color ----------
+function isHex(c){ return /^#[0-9a-f]{6}$/i.test(c); }
+function lum(hex){
+  const n=parseInt(hex.slice(1),16), ch=[n>>16&255,n>>8&255,n&255].map(v=>{ v/=255; return v<=.03928? v/12.92 : Math.pow((v+.055)/1.055,2.4); });
+  return .2126*ch[0]+.7152*ch[1]+.0722*ch[2];
+}
+function applyColor(){
+  const c=isHex(S.color)?S.color:DEFAULT_COLOR;
+  const root=document.documentElement;
+  root.style.setProperty('--shop',c);
+  const dark=lum(c)<.22;
+  root.classList.toggle('dark',dark);
+  root.style.setProperty('--ink',dark?'#ffffff':'#000000');
+}
+function setColor(c,fromHex){
+  if(!isHex(c)) return;
+  S.color=c.toUpperCase(); save(); render();
+  $('colorIn').value=S.color.toLowerCase();
+  if(!fromHex) $('hexIn').value=S.color;
+  $('hexIn').classList.remove('bad');
+  markSwatch();
+}
+function markSwatch(){ document.querySelectorAll('.sw').forEach(b=>b.classList.toggle('on',b.dataset.c.toUpperCase()===(S.color||'').toUpperCase())); }
+$('swatches').innerHTML=SWATCHES.map(([c,n])=>`<button class="sw" data-c="${c}" style="background:${c}" aria-label="${n}" title="${n}"></button>`).join('');
+document.querySelectorAll('.sw').forEach(b=>b.addEventListener('click',()=>setColor(b.dataset.c)));
+$('colorIn').addEventListener('input',e=>setColor(e.target.value));
+$('hexIn').addEventListener('input',e=>{
+  let v=e.target.value.trim(); if(v && v[0]!=='#') v='#'+v;
+  if(isHex(v)) setColor(v,true); else e.target.classList.add('bad');
+});
+$('hexIn').addEventListener('blur',()=>{ $('hexIn').value=S.color; $('hexIn').classList.remove('bad'); });
+
+// ---------- Setup panel ----------
+function syncPanel(){
+  $('list').value=S.entries.join('\n');
+  $('titleIn').value=S.title;
+  $('hexIn').value=S.color;
+  $('colorIn').value=(isHex(S.color)?S.color:DEFAULT_COLOR).toLowerCase();
+  markSwatch();
+  updateCount();
+}
+function updateCount(extra){
+  $('count').textContent=`${S.entries.filter(n=>n.trim()).length} / 32`;
+  const names=[...dupSet()].map(k=>S.entries.find(n=>norm(n)===k).trim());
+  let msg=names.length?`Listed twice: ${names.join(', ')}`:'';
+  if(extra) msg=(msg?msg+'. ':'')+'Only the first 32 lines are used.';
+  $('dups').textContent=msg;
+}
+let listSnapped=false;
+$('list').addEventListener('focus',()=>{ listSnapped=false; });
+$('list').addEventListener('input',()=>{
+  if(!listSnapped){ snap(); listSnapped=true; }
+  const lines=$('list').value.split('\n');
+  for(let i=0;i<32;i++) S.entries[i]=(lines[i]||'').trim();
+  save(); render(); updateCount(lines.slice(32).some(l=>l.trim()));
+});
+let titleSnapped=false;
+$('titleIn').addEventListener('focus',()=>{ titleSnapped=false; });
+$('titleIn').addEventListener('input',()=>{
+  if(!titleSnapped){ snap(); titleSnapped=true; }
+  S.title=$('titleIn').value; save(); render();
+});
+
+const MODE_TEXT={
+  pick:['Tap a name to send it to the next round.','Tap a name to move it forward. Tap it again to pull it back. Drag a name along its path to jump rounds, or back to undo.'],
+  move:['Move mode: drag a first-round name onto another spot and they trade places.','Drag a name onto another first-round spot to swap them. Or tap one, then tap the other. Picks in those matchups reset.'],
+  rename:['Rename mode: tap any name to change it.','Tap any name, in any round, to rename it. Tap an empty first-round spot to add a name.']
+};
+function setMode(m){
+  mode=m; sel=null;
+  stage.classList.remove('m-pick','m-move','m-rename'); stage.classList.add('m-'+m);
+  document.querySelectorAll('.seg button').forEach(b=>b.classList.toggle('on',b.dataset.mode===m));
+  $('sub').textContent=MODE_TEXT[m][0];
+  $('hint').textContent=MODE_TEXT[m][1];
+  render();
+}
+document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+function setPanel(on){
+  panelOpen=on; stage.classList.toggle('panel-open',on);
+  $('bSetup').classList.toggle('solid',on);
+  if(on) syncPanel();
+}
+$('bSetup').addEventListener('click',()=>setPanel(!panelOpen));
+$('bDone').addEventListener('click',()=>setPanel(false));
+$('title').addEventListener('click',()=>{ if(mode==='rename'){ setPanel(true); $('titleIn').focus(); } });
+
+$('bUndo').addEventListener('click',undo);
+function undo(){ if(!hist.length) return; S=JSON.parse(hist.pop()); save(); render(); syncPanel(); toast('Undone'); }
+function doClear(){ if(!picked()){ toast('No picks to clear'); return; } snap(); clearPicks(); commit(); toast('Picks cleared. Undo brings them back.'); }
+$('bClear').addEventListener('click',doClear);
+$('bClear2').addEventListener('click',doClear);
+$('bShuffle').addEventListener('click',()=>{
+  snap(); const a=S.entries;
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  clearPicks(); commit(); syncPanel(); toast('Shuffled');
+});
+$('bLoad').addEventListener('click',()=>{ snap(); S.entries=DEFAULT.slice(); clearPicks(); commit(); syncPanel(); toast('Drill list loaded'); });
+$('bWipe').addEventListener('click',()=>{ snap(); S.entries=Array(32).fill(''); clearPicks(); commit(); syncPanel(); toast('Names cleared'); });
+$('bReset').addEventListener('click',()=>{ snap(); S=blank(); commit(); syncPanel(); toast('Bracket reset'); });
+
+function resultsText(){
+  const nm=i=> i===null ? 'TBD' : (S.entries[i]||'(blank)');
+  const out=[(S.title||'Bracket').toUpperCase(),''];
+  for(let L=0;L<5;L++){
+    out.push(ROUNDS[L]);
+    for(let m=0;m<(32>>L)/2;m++){
+      const a=occ(L,2*m), b=occ(L,2*m+1), w=S.slots[L+1][m];
+      out.push(`  ${nm(a)} vs ${nm(b)}${w!==null?'  (winner: '+nm(w)+')':''}`);
+    }
+    out.push('');
+  }
+  out.push('Champion: '+(S.slots[5][0]!==null?nm(S.slots[5][0]):'To be decided'));
+  return out.join('\n');
+}
+$('bCopy').addEventListener('click',async()=>{
+  const txt=resultsText();
+  try{ await navigator.clipboard.writeText(txt); toast('Results copied'); return; }catch(e){}
+  try{
+    const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); const ok=document.execCommand('copy'); ta.remove();
+    toast(ok?'Results copied':'Copy is blocked in this browser');
+  }catch(e){ toast('Copy is blocked in this browser'); }
+});
+
+$('bFull').addEventListener('click',async()=>{
+  try{ if(document.fullscreenElement) await document.exitFullscreen(); else await document.documentElement.requestFullscreen(); }
+  catch(e){ toast('Fullscreen is blocked in this browser'); }
+});
+document.addEventListener('fullscreenchange',()=>{ $('bFull').textContent=document.fullscreenElement?'Exit fullscreen':'Fullscreen'; setTimeout(()=>{ fit(); render(); },80); });
+
+// ---------- Rename (touch-safe) ----------
+// A touchscreen fires a follow-up click right after the tap that opens this box.
+// That click must not close it, so the box ignores clicks for a moment after opening,
+// and the backdrop only closes it when a press both starts and ends on the backdrop.
+let renaming=null, openedAt=0, backdropPress=false;
+function openRename(e){
+  renaming=e; openedAt=performance.now();
+  const side=e<16?'Left side':'Right side', m=((e%16)>>1)+1;
+  $('rnWhere').textContent=`${side}, matchup ${m}`;
+  $('renameIn').value=S.entries[e]||'';
+  $('modal').classList.add('open'); $('modal').setAttribute('aria-hidden','false');
+  setTimeout(()=>{ if(renaming!==null){ $('renameIn').focus(); try{ $('renameIn').select(); }catch(_){} } },60);
+}
+function tooSoon(){ return performance.now()-openedAt<650; }
+function closeRename(){
+  renaming=null; $('modal').classList.remove('open'); $('modal').setAttribute('aria-hidden','true');
+  $('renameIn').blur();
+}
+function saveRename(){
+  if(renaming===null) return;
+  const v=$('renameIn').value.trim();
+  if(v!==S.entries[renaming]){ snap(); S.entries[renaming]=v; pops.add('0-'+renaming); commit(); syncPanel(); toast(v?`Renamed to ${v}`:'Name cleared'); }
+  closeRename();
+}
+$('bSave').addEventListener('click',e=>{ if(tooSoon()) return; saveRename(); });
+$('bCancel').addEventListener('click',e=>{ if(tooSoon()) return; closeRename(); });
+$('modal').addEventListener('pointerdown',e=>{ backdropPress = e.target===$('modal') && !tooSoon(); });
+$('modal').addEventListener('click',e=>{
+  if(e.target===$('modal') && backdropPress && !tooSoon()) closeRename();
+  backdropPress=false;
+});
+$('renameIn').addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.keyCode===13){ e.preventDefault(); saveRename(); }
+  else if(e.key==='Escape'){ closeRename(); }
+});
+
+// ---------- Toast ----------
+let tt;
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2200); }
+
+// ---------- Scale to screen ----------
+let scale=1;
+function fit(){
+  const w=vp.clientWidth, h=vp.clientHeight;
+  if(!w||!h) return;
+  scale=Math.min(w/1920,h/1080);
+  stage.style.transform=`translate(${(w-1920*scale)/2}px,${(h-1080*scale)/2}px) scale(${scale})`;
+}
+// The on-screen keyboard resizes the page while renaming; keep the layout steady then.
+window.addEventListener('resize',()=>{ if(renaming===null && document.activeElement.tagName!=='TEXTAREA' && document.activeElement.tagName!=='INPUT') fit(); });
+
+// ---------- Tap and drag ----------
+let drag=null, ghost=null, hotEl=null;
+function toStage(ev){ const r=stage.getBoundingClientRect(); return {x:(ev.clientX-r.left)/scale, y:(ev.clientY-r.top)/scale}; }
+function slotAt(ev){ const el=document.elementFromPoint(ev.clientX,ev.clientY); return el ? el.closest('#bracket .slot[data-l]') : null; }
+function q(L,p){ return bracket.querySelector(`.slot[data-l="${L}"][data-p="${p}"]`); }
+
+bracket.addEventListener('pointerdown',ev=>{
+  if(drag || ev.button>0 || renaming!==null) return;
+  const el=ev.target.closest('.slot[data-l]'); if(!el) return;
+  const L=+el.dataset.l, p=+el.dataset.p, e=occ(L,p);
+  if(mode==='rename'){ if(e===null && L!==0) return; }
+  else if(mode==='move'){ if(L!==0) return; }
+  else if(e===null) return;
+  drag={el,L,p,e,x0:ev.clientX,y0:ev.clientY,active:false,id:ev.pointerId,canDrag:e!==null && mode!=='rename'};
+});
+window.addEventListener('pointermove',ev=>{
+  if(!drag || ev.pointerId!==drag.id) return;
+  if(!drag.active){
+    if(!drag.canDrag) return;
+    if(Math.hypot(ev.clientX-drag.x0,ev.clientY-drag.y0) < 12) return;
+    startDrag();
+  }
+  const s=toStage(ev); ghost.style.left=s.x+'px'; ghost.style.top=s.y+'px';
+  const t=slotAt(ev);
+  if(hotEl && hotEl!==t) hotEl.classList.remove('hot');
+  hotEl=null;
+  if(t && (t.classList.contains('target')||t.classList.contains('swapt'))){ t.classList.add('hot'); hotEl=t; }
+});
+function startDrag(){
+  drag.active=true;
+  drag.el.classList.add('dragging');
+  ghost=document.createElement('div'); ghost.className='ghost'; ghost.textContent=S.entries[drag.e];
+  stage.appendChild(ghost);
+  if(mode==='pick') for(let k=0;k<=5;k++){
+    const p=drag.e>>k; if(k===drag.L && p===drag.p) continue;
+    const el=q(k,p); if(el) el.classList.add('target');
+  }
+  if(mode==='move') bracket.querySelectorAll('.slot[data-l="0"]').forEach(el=>{ if(+el.dataset.p!==drag.p) el.classList.add('swapt'); });
+}
+function endDrag(ev){
+  const d=drag; drag=null;
+  const t= ev ? slotAt(ev) : null;
+  if(ghost){ ghost.remove(); ghost=null; }
+  hotEl=null;
+  let done=false;
+  if(t && (t.classList.contains('target')||t.classList.contains('swapt'))) done=drop(d.e,d.L,d.p,+t.dataset.l,+t.dataset.p);
+  if(!done) render();
+}
+window.addEventListener('pointerup',ev=>{
+  if(!drag || ev.pointerId!==drag.id) return;
+  if(drag.active) endDrag(ev);
+  else { const d=drag; drag=null; tap(d.L,d.p); }
+});
+window.addEventListener('pointercancel',ev=>{ if(drag && ev.pointerId===drag.id){ if(drag.active) endDrag(null); else drag=null; } });
+
+bracket.addEventListener('keydown',ev=>{
+  if(ev.key!=='Enter' && ev.key!==' ') return;
+  const el=ev.target.closest('.slot[data-l]'); if(!el) return;
+  ev.preventDefault(); openedAt=performance.now(); tap(+el.dataset.l,+el.dataset.p);
+});
+document.addEventListener('keydown',ev=>{
+  const typing=/^(INPUT|TEXTAREA)$/.test(document.activeElement && document.activeElement.tagName);
+  if((ev.ctrlKey||ev.metaKey) && ev.key.toLowerCase()==='z' && !typing){ ev.preventDefault(); undo(); }
+  if(ev.key==='Escape'){ if(renaming!==null) closeRename(); else if(sel!==null){ sel=null; render(); } else if(panelOpen) setPanel(false); }
+});
+
+fit(); setMode('pick'); syncPanel();
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(render);
+})();
+</script>
+</body>
+</html>
