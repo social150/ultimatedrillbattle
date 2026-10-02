@@ -282,13 +282,13 @@ input,textarea{-webkit-user-select:text;user-select:text}
 <script>
 (function(){
 const DEFAULT = [
-  "Milwaukee","HyperTough","Craftsman","Cat","Makita","Black and Decker","HOTO","Fanttik",
-  "Flex","Metabo","Skil","Hitachi","Kobalt","Porter Cable","Kreg","Bosch",
-  "DeWalt","Greenworks","Parkside","Litheli","Ryobi","Bauer","Masterforce","Vevor",
-  "Warrior","Ridgid","Genesis","Hercules","The OG Pink Box","WORX","WEN","HILTI"
+  "Milwaukee","HyperTough","Craftsman","Cat","The OG Pink Box","Kobalt","HOTO","Fanttik",
+  "Bauer","Metabo","Dong Cheng","Hitachi","Black + Decker","Porter Cable","Kreg","Bosch",
+  "Makita","Litheli","Parkside","Vevor","Ryobi","Hart","Masterforce","Greenworks",
+  "Ridgid","DEKO","Skil","WORX","Warrior","Hercules","Wen","DeWalt"
 ];
 const DEFAULT_TITLE = "Ultimate Drill Battle";
-const DEFAULT_COLOR = "#F5C400";
+const DEFAULT_COLOR = "#FFB000";
 const SWATCHES = [
   ["#F5C400","Shop yellow"],["#FFD60A","Safety yellow"],["#FFB000","Amber"],["#D7F205","Hi-vis"],["#FF7A00","Signal orange"],
   ["#E3262E","Red"],["#00A0A8","Teal"],["#0B4F9C","Blue"],["#B9B7AE","Concrete"],["#161616","Black"]
@@ -322,6 +322,13 @@ function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
 
 let S=load();
 if(S.title==='Every Drill Brand'||S.title==='Drill Battle'){ S.title=DEFAULT_TITLE; save(); }
+// Lineup version: any lineup saved by an older version of this page is replaced with the current one.
+const LINEUP_ID='lineup-2026-09-30b';
+if(S.lineup!==LINEUP_ID){
+  const same=S.entries.every((n,i)=>n===DEFAULT[i]);
+  if(!same){ S.entries=DEFAULT.slice(); for(let L=1;L<=5;L++) S.slots[L].fill(null); }
+  S.lineup=LINEUP_ID; save();
+}
 let hist=[];
 let pops=new Set();
 let mode='pick', panelOpen=false, sel=null;
@@ -563,7 +570,7 @@ $('bShuffle').addEventListener('click',()=>{
 });
 $('bLoad').addEventListener('click',()=>{ snap(); S.entries=DEFAULT.slice(); clearPicks(); commit(); syncPanel(); toast('Drill list loaded'); });
 $('bWipe').addEventListener('click',()=>{ snap(); S.entries=Array(32).fill(''); clearPicks(); commit(); syncPanel(); toast('Names cleared'); });
-$('bReset').addEventListener('click',()=>{ snap(); S=blank(); commit(); syncPanel(); toast('Bracket reset'); });
+$('bReset').addEventListener('click',()=>{ snap(); S=blank(); S.lineup=LINEUP_ID; commit(); syncPanel(); toast('Bracket reset'); });
 
 function resultsText(){
   const nm=i=> i===null ? 'TBD' : (S.entries[i]||'(blank)');
